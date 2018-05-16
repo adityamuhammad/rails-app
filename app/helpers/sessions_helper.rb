@@ -4,7 +4,7 @@ module SessionsHelper
     session[:user_id] = user.id
   end
 
-  # Remembers a user in a persisent session
+  # Remembers a user in a persistent session
   def remember(user)
     user.remember
     cookies.permanent.signed[:user_id] = user.id
@@ -16,6 +16,7 @@ module SessionsHelper
     if (user_id = session[:user_id])
       @current_user ||= User.find_by(id: user_id)
     elsif (user_id = cookies.signed[:user_id])
+      #raise # The tests still pass, so this branch is currently untested.
       user = User.find_by(id: user_id)
       if user && user.authenticated?(cookies[:remember_token])
         log_in user
@@ -30,7 +31,7 @@ module SessionsHelper
     #current_user.present?
   end
 
-  # Forgets a persisten session
+  # Forgets a persistent session
   def forget(user)
     user.forget
     cookies.delete(:user_id)
